@@ -1,7 +1,13 @@
 body::before {
     display: block;
     content: '';
-    height: 70px;
+    height: 65px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
 }
 
 #branding-logo {
@@ -13,4 +19,10 @@ body::before {
 
 .active {
     color: darkblue;
+}
+
+@media only screen and (max-width: 852px) {
+    #map {
+        display: none;
+    }
 }

@@ -6,7 +6,7 @@ function navGen() {
 
     echo "<nav class='navbar navbar-expand-lg bg-primary fw-bold text-uppercase py-1 fixed-top'>
         <div class='container'>
-            <a href='index.php' class='navbar-brand'><img src='assets/img/banner.png' alt='trogair logo' class='img-fluid' id='branding-logo'></a>
+            <a href='index.php' class='navbar-brand text-white fs-2'>Embair</a>
 
             <button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navmenu'>
                 <span class='navbar-toggler-icon'></span>

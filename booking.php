@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <title>Főoldal</title>
+    <title>Foglalás</title>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="assets/css/style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
