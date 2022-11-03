@@ -4,6 +4,16 @@ function navGen() {
 
     $tmp = basename($_SERVER['PHP_SELF'], ".php");
 
+    $listitem = false;
+    switch($tmp) {
+        case "cities":
+        case "flights":
+        case "clients":
+        case "tickets":
+        case "bookings":
+        case "contains": $listitem = true; break;
+    }
+
     echo "<nav class='navbar navbar-expand-lg bg-primary fw-bold text-uppercase py-1 fixed-top'>
         <div class='container'>
             <a href='index.php' class='navbar-brand text-white fs-2'>Travall</a>
@@ -15,22 +25,18 @@ function navGen() {
             <div class='collapse navbar-collapse' id='navmenu'>
                 <ul class='navbar-nav ms-auto'>
                     <li class='nav-item'>
-                        <a href='index.php' class='nav-link " . ($tmp === "index" ? " class='active'" : "") . " text-white'>Főoldal</a>
+                        <a href='index.php' class='nav-link text-white' " . ($tmp === "index" ? "style='color: darkblue !important;'" : "") . ">Főoldal</a>
                     </li>
-                    <li class='nav-item'>
-                        <a href='flights.php' class='nav-link " . ($tmp === "flights" ? " class='active'" : "") . "  text-white'>Járatok</a>
-                    </li>
-                    <li class='nav-item'>
-                        <a href='cities.php' class='nav-link " . ($tmp === "cities" ? " class='active'" : "") . "  text-white'>Városok</a>
-                    </li>
-                    <li class='nav-item'>
-                        <a href='booking.php' class='nav-link " . ($tmp === "booking" ? " class='active'" : "") . "  text-white'>Foglalás</a>
-                    </li>
-                    <li class='nav-item'>
-                        <a href='clients.php' class='nav-link " . ($tmp === "clients" ? " class='active'" : "") . "  text-white'>Ügyfelek</a>
-                    </li>
-                    <li class='nav-item'>
-                        <a href='contact.php' class='nav-link " . ($tmp === "contact" ? " class='active'" : "") . "  text-white'>Kapcsolat</a>
+                    <li class='nav-item dropdown my-auto'>
+                        <a href='#' class='text-white dropdown-toggle' role='button' data-bs-toggle='dropdown' aria-expanded='false' style='text-decoration: none; " . ($listitem ? "color: darkblue !important;" : "") . "'>Táblakezelés</a>
+                        <ul class='dropdown-menu'>
+                            <li><a href='cities.php' class='dropdown-item nav-link'>Városok</a></li>
+                            <li><a href='flights.php' class='dropdown-item nav-link'>Járatok</a></li>
+                            <li><a href='clients.php' class='dropdown-item nav-link'>Ügyfelek</a></li>
+                            <li><a href='tickets.php' class='dropdown-item nav-link'>Jegyek</a></li>
+                            <li><a href='bookings.php' class='dropdown-item nav-link'>Foglalások</a></li>
+                            <li><a href='contains.php' class='dropdown-item nav-link'>Tartalmazás</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -38,3 +44,88 @@ function navGen() {
     </nav>";
 
 }
+
+function open_connection() {
+    $connection = mysqli_connect("localhost", "root", "") or die("Sikertelen adatbázis csatlakozás!");
+    if (!mysqli_select_db($connection, "JEGYFOGLALAS")) return false;
+    return $connection;
+}
+
+function get_data($tablename) {
+    $connection = open_connection();
+    if (!$connection) return false;
+    $result = mysqli_query($connection, "SELECT * FROM $tablename");
+    if (!$result) return "";
+    mysqli_close($connection);
+    return $result;
+}
+
+function create_data($tablename, $what, $data) {
+    $connection = open_connection();
+    if (!$connection) return false;
+    $values = "(";
+    for ($i = 0; $i < count($data); $i++) {
+        $values = $values . "'" . $data[$i] . "'";
+        if ($i !== count($data) - 1) $values = $values . ", ";
+    }
+    $values = $values . ")";
+    $sql = "INSERT INTO " . $tablename . $what . " VALUES " . $values;
+    if (mysqli_query($connection, $sql)) {
+        mysqli_close($connection);
+        return true;
+    }
+    else {
+        mysqli_close($connection);
+        return false;
+    }
+}
+
+function delete_data($tablename, $id_attr_name, $id) {
+    $connection = open_connection();
+    if (!$connection) return false;
+    $sql = "DELETE FROM " . $tablename . " WHERE " . $id_attr_name . "=" . $id;
+    if (mysqli_query($connection, $sql)) {
+        mysqli_close($connection);
+        return true;
+    }
+    else {
+        mysqli_close($connection);
+        return false;
+    }
+}
+
+function update_now($id) {
+    $connection = open_connection();
+    if (!$connection) return false;
+    $sql = "UPDATE varos SET varosnev='valami' WHERE varos_id=" . $id;
+    if (mysqli_query($connection, $sql)) {
+        mysqli_close($connection);
+        return true;
+    }
+    else {
+        mysqli_close($connection);
+        return false;
+    }
+}
+
+function update_data($tablename, $id_attr_name, $id, $assoc_data) {
+    $connection = open_connection();
+    if (!$connection) return false;
+    $set = "";
+    foreach($assoc_data as $key => $val) {
+        if ($val !== "") {
+            $set = $set . $key . "=" . "'" . $val . "'" . ", "; // if nem string lesz akkor nem kell ' !!! try + 0 if-en belul maybe?
+        }
+    }
+    $set = rtrim($set, ", ");
+    $sql = "UPDATE " . $tablename . " SET " . $set . " WHERE " . $id_attr_name . "=" . $id;
+    if (mysqli_query($connection, $sql)) {
+        mysqli_close($connection);
+        return true;
+    }
+    else {
+        mysqli_close($connection);
+        return false;
+    }
+}
+

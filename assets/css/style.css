@@ -17,10 +17,6 @@ body::before {
     color: white;
 }
 
-.active {
-    color: darkblue;
-}
-
 @media only screen and (max-width: 852px) {
     #map {
         display: none;
