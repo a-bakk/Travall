@@ -7,7 +7,7 @@ function navGen() {
     $listitem = false;
     switch($tmp) {
         case "cities":
-        case "flights":
+        case "routes":
         case "clients":
         case "tickets":
         case "bookings":
@@ -31,7 +31,7 @@ function navGen() {
                         <a href='#' class='text-white dropdown-toggle' role='button' data-bs-toggle='dropdown' aria-expanded='false' style='text-decoration: none; " . ($listitem ? "color: darkblue !important;" : "") . "'>Táblakezelés</a>
                         <ul class='dropdown-menu'>
                             <li><a href='cities.php' class='dropdown-item nav-link'>Városok</a></li>
-                            <li><a href='flights.php' class='dropdown-item nav-link'>Járatok</a></li>
+                            <li><a href='routes.php' class='dropdown-item nav-link'>Járatok</a></li>
                             <li><a href='clients.php' class='dropdown-item nav-link'>Ügyfelek</a></li>
                             <li><a href='tickets.php' class='dropdown-item nav-link'>Jegyek</a></li>
                             <li><a href='bookings.php' class='dropdown-item nav-link'>Foglalások</a></li>
@@ -65,7 +65,12 @@ function create_data($tablename, $what, $data) {
     if (!$connection) return false;
     $values = "(";
     for ($i = 0; $i < count($data); $i++) {
-        $values = $values . "'" . $data[$i] . "'";
+        if (gettype($data[$i]) === "integer" || gettype($data[$i]) === "double") {
+            $values = $values . $data[$i];
+        }
+        else {
+            $values = $values . "'" . $data[$i] . "'";
+        }
         if ($i !== count($data) - 1) $values = $values . ", ";
     }
     $values = $values . ")";
@@ -94,27 +99,16 @@ function delete_data($tablename, $id_attr_name, $id) {
     }
 }
 
-function update_now($id) {
-    $connection = open_connection();
-    if (!$connection) return false;
-    $sql = "UPDATE varos SET varosnev='valami' WHERE varos_id=" . $id;
-    if (mysqli_query($connection, $sql)) {
-        mysqli_close($connection);
-        return true;
-    }
-    else {
-        mysqli_close($connection);
-        return false;
-    }
-}
-
 function update_data($tablename, $id_attr_name, $id, $assoc_data) {
     $connection = open_connection();
     if (!$connection) return false;
     $set = "";
     foreach($assoc_data as $key => $val) {
         if ($val !== "") {
-            $set = $set . $key . "=" . "'" . $val . "'" . ", "; // if nem string lesz akkor nem kell ' !!! try + 0 if-en belul maybe?
+            if (gettype($val) === "integer" || gettype($val) === "double")
+                $set = $set . $key . "=" . $val . ", ";
+            else
+                $set = $set . $key . "=" . "'" . $val . "'" . ", ";
         }
     }
     $set = rtrim($set, ", ");
