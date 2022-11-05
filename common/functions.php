@@ -65,7 +65,7 @@ function create_data($tablename, $what, $data) {
     if (!$connection) return false;
     $values = "(";
     for ($i = 0; $i < count($data); $i++) {
-        if (gettype($data[$i]) === "integer" || gettype($data[$i]) === "double") {
+        if (gettype($data[$i]) === "integer" || gettype($data[$i]) === "double") { // is_numeric()?
             $values = $values . $data[$i];
         }
         else {
@@ -88,13 +88,34 @@ function create_data($tablename, $what, $data) {
 function delete_data($tablename, $id_attr_name, $id) {
     $connection = open_connection();
     if (!$connection) return false;
-    $sql = "DELETE FROM " . $tablename . " WHERE " . $id_attr_name . "=" . $id;
+    if (gettype($id) === "integer") {
+        $sql = "DELETE FROM " . $tablename . " WHERE " . $id_attr_name . "=" . $id;
+    } else {
+        $sql = "DELETE FROM " . $tablename . " WHERE " . $id_attr_name . "=" . "'" . $id . "'";
+    }
     if (mysqli_query($connection, $sql)) {
         mysqli_close($connection);
         return true;
     }
     else {
         mysqli_close($connection);
+        return false;
+    }
+}
+
+function delete_data_contains($foglalas_id, $jarat_id) {
+    $connection = open_connection();
+    if (!$connection) return false;
+    if (is_numeric($foglalas_id) && is_numeric($jarat_id)) { // is_numeric() should also work
+        $sql = "DELETE FROM tartalmaz WHERE foglalas_id=" . intval($foglalas_id) . " AND jarat_id=" . intval($jarat_id);
+        if (mysqli_query($connection, $sql)) {
+            mysqli_close($connection);
+            return true;
+        } else {
+            mysqli_close($connection);
+            return false;
+        }
+    } else {
         return false;
     }
 }
@@ -112,7 +133,35 @@ function update_data($tablename, $id_attr_name, $id, $assoc_data) {
         }
     }
     $set = rtrim($set, ", ");
-    $sql = "UPDATE " . $tablename . " SET " . $set . " WHERE " . $id_attr_name . "=" . $id;
+    if (gettype($id) === "integer") {
+        $sql = "UPDATE " . $tablename . " SET " . $set . " WHERE " . $id_attr_name . "=" . $id;
+    } else {
+        $sql = "UPDATE " . $tablename . " SET " . $set . " WHERE " . $id_attr_name . "=" . "'" . $id . "'";
+    }
+    if (mysqli_query($connection, $sql)) {
+        mysqli_close($connection);
+        return true;
+    }
+    else {
+        mysqli_close($connection);
+        return false;
+    }
+}
+
+function update_data_contains($foglalas_id, $jarat_id, $in_foglalas_id, $in_jarat_id) {
+    $connection = open_connection();
+    if (!$connection) return false;
+    $set = "";
+    if ($in_foglalas_id !== "") {
+        if (is_numeric($in_foglalas_id))
+                $set = $set . "foglalas_id =" . intval($in_foglalas_id) . ", ";
+    }
+    if ($in_jarat_id !== "") {
+        if (is_numeric($in_jarat_id))
+                $set = $set . "jarat_id =" . intval($in_jarat_id) . ", ";
+    }
+    $set = rtrim($set, ", ");
+    $sql = "UPDATE tartalmaz SET " . $set . " WHERE foglalas_id=" . $foglalas_id . " AND jarat_id=" . $jarat_id;
     if (mysqli_query($connection, $sql)) {
         mysqli_close($connection);
         return true;
