@@ -86,7 +86,7 @@ include_once "common/functions.php";
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="col">foglalás id</th>
+                                <!-- <th class="col">foglalás id</th> -->
                                 <th class="col">e-mail</th>
                                 <th class="col">év</th>
                                 <th class="col">hónap</th>
@@ -99,7 +99,7 @@ include_once "common/functions.php";
                             <?php
                             while ($row = mysqli_fetch_assoc($bookings)) {
                                 echo '<tr>';
-                                echo '<td>' . $row['foglalas_id'] . '</td>';
+                                // echo '<td>' . $row['foglalas_id'] . '</td>';
                                 echo '<td>' . $row['email'] . '</td>';
                                 echo '<td>' . $row['l_ev'] . '</td>';
                                 echo '<td>' . $row['l_honap'] . '</td>';

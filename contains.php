@@ -80,7 +80,7 @@ include_once "common/functions.php";
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="col">foglalás id</th>
+                                <th class="col">foglalás id</th> // kind of generált adat, viszont csak ez van ebben a táblában
                                 <th class="col">járat id</th>
                                 <th class="col">törlés</th>
                                 <th class="col">módosítás</th>

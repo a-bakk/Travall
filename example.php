@@ -5,7 +5,7 @@ include_once "common/functions.php";
 <html lang="hu">
 
 <head>
-    <title>Városok</title>
+    <title>Példa</title>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="assets/css/style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -22,7 +22,7 @@ include_once "common/functions.php";
     <section class="p-5 bg-light">
         <div class="container">
             <div class="row text-center">
-                <h2 class="mb-5 text-capitalize">Városok</h2>
+                <h2 class="mb-5 text-capitalize">Valós(abb) példa</h2>
             </div>
             <?php
             if (isset($_GET["missingdata"])) {
@@ -83,7 +83,7 @@ include_once "common/functions.php";
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <!-- <th class="col">város id</th> -->
+                                <th class="col">város id</th>
                                 <th class="col">városnév</th>
                                 <th class="col">irányítószám</th>
                                 <th class="col">ország</th>
@@ -95,7 +95,7 @@ include_once "common/functions.php";
                             <?php
                             while ($row = mysqli_fetch_assoc($cities)) {
                                 echo '<tr>';
-                                // echo '<td>' . $row['varos_id'] . '</td>';
+                                echo '<td>' . $row['varos_id'] . '</td>';
                                 echo '<td>' . $row['varosnev'] . '</td>';
                                 echo '<td>' . $row['iranyitoszam'] . '</td>';
                                 echo '<td>' . $row['orszag'] . '</td>';

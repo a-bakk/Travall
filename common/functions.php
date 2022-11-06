@@ -54,10 +54,44 @@ function open_connection() {
 function get_data($tablename) {
     $connection = open_connection();
     if (!$connection) return false;
-    $result = mysqli_query($connection, "SELECT * FROM $tablename");
-    if (!$result) return "";
-    mysqli_close($connection);
-    return $result;
+    try {
+        $result = mysqli_query($connection, "SELECT * FROM " . $tablename);
+        mysqli_close($connection);
+        return $result;
+    } catch (Exception) {
+        mysqli_close($connection);
+        return "";
+    }
+}
+
+function get_specific_data($tablename, $what) {
+    $connection = open_connection();
+    if (!$connection) return false;
+    try {
+        $result = mysqli_query($connection, "SELECT " . $what . " FROM " . $tablename);
+        mysqli_close($connection);
+        return $result;
+    } catch (Exception) {
+        mysqli_close($connection);
+        return false;
+    }
+}
+
+function list_routes() {
+    $connection = open_connection();
+    if (!$connection) return false;
+    $sql = "SELECT  jarat.jarat_id, jarat.tipus, jarat.szolgaltato, jarat.ev, jarat.honap, jarat.nap,
+                    honnan.varosnev AS honnan_nev, hova.varosnev AS hova_nev
+                    FROM jarat INNER JOIN varos honnan ON jarat.honnan_varos_id = honnan.varos_id
+                    INNER JOIN varos hova ON jarat.hova_varos_id = hova.varos_id;";
+    try {
+        $result = mysqli_query($connection, $sql);
+        mysqli_close($connection);
+        return $result;
+    } catch (Exception) {
+        mysqli_close($connection);
+        return false;
+    }
 }
 
 function create_data($tablename, $what, $data) {
@@ -75,11 +109,12 @@ function create_data($tablename, $what, $data) {
     }
     $values = $values . ")";
     $sql = "INSERT INTO " . $tablename . $what . " VALUES " . $values;
-    if (mysqli_query($connection, $sql)) {
+    try {
+        mysqli_query($connection, $sql);
         mysqli_close($connection);
         return true;
     }
-    else {
+    catch (Exception) {
         mysqli_close($connection);
         return false;
     }

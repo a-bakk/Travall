@@ -86,7 +86,7 @@ include_once "common/functions.php";
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="col">jegy id</th>
+                                <!-- <th class="col">jegy id</th> -->
                                 <th class="col">ár</th>
                                 <th class="col">rész (ha helyjegy)</th>
                                 <th class="col">székszám (ha helyjegy)</th>
@@ -99,7 +99,7 @@ include_once "common/functions.php";
                             <?php
                             while ($row = mysqli_fetch_assoc($tickets)) {
                                 echo '<tr>';
-                                echo '<td>' . $row['jegy_id'] . '</td>';
+                                // echo '<td>' . $row['jegy_id'] . '</td>';
                                 echo '<td>' . $row['ar'] . '</td>';
                                 echo '<td>' . ($row['h_resz'] == "" ? "nincs" : $row['h_resz']) . '</td>';
                                 echo '<td>' . (($row['h_szekszam'] == "" || $row['h_szekszam'] == 0) ? "nincs" : $row['h_szekszam']) . '</td>';

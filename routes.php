@@ -45,8 +45,13 @@ include_once "common/functions.php";
                 Sikeres művelet!
                 </div>';
             }
-            ?>
-            <div class="row mb-5">
+            $create_citylist = get_specific_data("varos", "varos_id, varosnev");
+            if ($create_citylist === false) {
+                echo '<div class="alert alert-danger text-center" role="alert">
+                Sikertelen adatbázisművelet!
+                </div>';
+            }
+            echo '<div class="row mb-5">
                 <div class="col-md-auto">
                     <h5>Új rekord felvitele</h5>
                 </div>
@@ -67,21 +72,44 @@ include_once "common/functions.php";
                         </div>
                         <div class="col-auto">
                             <input type="number" class="form-control" name="in_nap" placeholder="nap" min="1" max="31" step="1">
-                        </div>
-                        <div class="col-auto">
-                            <input type="number" class="form-control" name="in_honnan_varos_id" placeholder="Honnan (város id)" min="1" step="1">
-                        </div>
-                        <div class="col-auto">
-                            <input type="number" class="form-control" name="in_hova_varos_id" placeholder="Hova (város id)" min="1" step="1">
-                        </div>
+                        </div>';
+                        echo '<div class="col-auto"><div class="row">';
+                        echo '<div class="col-auto"><label for="fromWhere" class="form-label">Honnan: </label></div>';
+                        echo '<div class="col-auto"><select class="form-select" name="in_honnan_varos_id" id="fromWhere">';
+                        echo '<option value="">...</option>';
+                        while ($where_row = mysqli_fetch_assoc($create_citylist)) {
+                            echo '<option value="' . $where_row['varos_id'] .'"> ' . $where_row['varosnev'] . ' </option>';
+                        }
+                        mysqli_free_result($create_citylist);
+                        if ($create_citylist === false) {
+                            echo '<div class="alert alert-danger text-center" role="alert">
+                            Sikertelen adatbázisművelet!
+                            </div>';
+                        }
+                        $create_citylist = get_specific_data("varos", "varos_id, varosnev");
+                        echo '</select> </div> </div> </div>';
+                        echo '<div class="col-auto"><div class="row">';
+                        echo '<div class="col-auto"><label for="toWhere" class="form-label">Hova: </label></div>';
+                        echo '<div class="col-auto"><select class="form-select" name="in_hova_varos_id" id="toWhere">';
+                        echo '<option value="">...</option>';
+                        while ($to_row = mysqli_fetch_assoc($create_citylist)) {
+                            echo '<option value="' . $to_row['varos_id'] .'"> ' . $to_row['varosnev'] . ' </option>';
+                        }
+                        echo '</select> </div> </div> </div>';
+                        mysqli_free_result($create_citylist);
+                        echo '
                         <div class="col-auto">
                             <input type="submit" class="btn btn-info" value="Elküldés" name="submitted" />
                         </div>
                     </form>
                 </div>
-            </div>
-            <?php
-            $routes = get_data("jarat");
+            </div>';
+            $routes = list_routes();
+            if (!$routes) {
+                echo '<div class="alert alert-danger text-center" role="alert">
+                Sikertelen adatbázisművelet!
+                </div>';
+            }
             if ($routes === "") {
                 echo '<div class="alert alert-danger text-center" role="alert">
                         A tábla üres!
@@ -95,28 +123,28 @@ include_once "common/functions.php";
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="col">járat id</th>
+                                <!-- <th class="col">járat id</th> -->
                                 <th class="col">típus</th>
                                 <th class="col">szolgáltató</th>
                                 <th class="col">év</th>
                                 <th class="col">hónap</th>
                                 <th class="col">nap</th>
-                                <th class="col">honnan város id</th>
-                                <th class="col">hova város id</th>
+                                <th class="col">honnan</th>
+                                <th class="col">hova</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
                             while ($row = mysqli_fetch_assoc($routes)) {
                                 echo '<tr>';
-                                echo '<td>' . $row['jarat_id'] . '</td>';
+                                // echo '<td>' . $row['jarat_id'] . '</td>';
                                 echo '<td>' . $row['tipus'] . '</td>';
                                 echo '<td>' . $row['szolgaltato'] . '</td>';
                                 echo '<td>' . $row['ev'] . '</td>';
                                 echo '<td>' . $row['honap'] . '</td>';
                                 echo '<td>' . $row['nap'] . '</td>';
-                                echo '<td>' . $row['honnan_varos_id'] . '</td>';
-                                echo '<td>' . $row['hova_varos_id'] . '</td>';
+                                echo '<td>' . $row['honnan_nev'] . '</td>';
+                                echo '<td>' . $row['hova_nev'] . '</td>';
                                 echo '<td><form method="POST" action="deleteitem.php">
                                 <input type="hidden" name="frompage" value="routes" />
                                 <input type="hidden" name="in_jarat_id" value=' . $row['jarat_id'] . ' />
@@ -157,13 +185,38 @@ include_once "common/functions.php";
                                                     </div>
                                                     <div class="col-auto">
                                                         <input type="number" class="form-control" name="in_nap" placeholder="nap" min="1" max="31" step="1">
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <input type="number" class="form-control" name="in_honnan_varos_id" placeholder="Honnan (város id)" min="1" step="1">
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <input type="number" class="form-control" name="in_hova_varos_id" placeholder="Hova (város id)" min="1" step="1">
-                                                    </div>
+                                                    </div>';
+                                                    echo '<div class="col-auto"><div class="row">';
+                                                    echo '<div class="col-auto"><label for="fromWhere_m" class="form-label">Honnan: </label></div>';
+                                                    echo '<div class="col-auto"><select class="form-select" name="in_honnan_varos_id" id="fromWhere_m">';
+                                                    $modify_citylist = get_specific_data("varos", "varos_id, varosnev");
+                                                    if ($modify_citylist === false) {
+                                                        echo '<div class="alert alert-danger text-center" role="alert">
+                                                        Sikertelen adatbázisművelet!
+                                                        </div>';
+                                                    }
+                                                    echo '<option value="">...</option>';
+                                                    while ($where_row = mysqli_fetch_assoc($modify_citylist)) {
+                                                        echo '<option value="' . $where_row['varos_id'] .'"> ' . $where_row['varosnev'] . ' </option>';
+                                                    }
+                                                    mysqli_free_result($modify_citylist);
+                                                    $modify_citylist = get_specific_data("varos", "varos_id, varosnev");
+                                                    if ($modify_citylist === false) {
+                                                        echo '<div class="alert alert-danger text-center" role="alert">
+                                                        Sikertelen adatbázisművelet!
+                                                        </div>';
+                                                    }
+                                                    echo '</select> </div> </div> </div>';
+                                                    echo '<div class="col-auto"><div class="row">';
+                                                    echo '<div class="col-auto"><label for="toWhere_m" class="form-label">Hova: </label></div>';
+                                                    echo '<div class="col-auto"><select class="form-select" name="in_hova_varos_id" id="toWhere_m">';
+                                                    echo '<option value="">...</option>';
+                                                    while ($to_row = mysqli_fetch_assoc($modify_citylist)) {
+                                                        echo '<option value="' . $to_row['varos_id'] .'"> ' . $to_row['varosnev'] . ' </option>';
+                                                    }
+                                                    echo '</select> </div> </div> </div>';
+                                                    mysqli_free_result($modify_citylist);
+                                                    echo '
                                                     <div class="col-auto">
                                                         <input type="submit" class="btn btn-info" value="Elküldés" name="submitted" />
                                                     </div>
