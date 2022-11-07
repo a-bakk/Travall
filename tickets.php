@@ -25,6 +25,12 @@ include_once "common/functions.php";
                 <h2 class="mb-5 text-capitalize">Jegyek</h2>
             </div>
             <?php
+            $routes = list_routes();
+            if ($routes === false) {
+                echo '<div class="alert alert-danger text-center" role="alert">
+                Sikertelen adatbázisművelet!
+                </div>';
+            }
             if (isset($_GET["missingdata"])) {
                 echo '<div class="alert alert-danger text-center" role="alert">
                 Hiányos adatok!
@@ -45,7 +51,7 @@ include_once "common/functions.php";
                 Sikeres művelet!
                 </div>';
             }
-            ?>
+            echo '
             <div class="row mb-5">
                 <div class="col-md-auto">
                     <h5>Új rekord felvitele</h5>
@@ -61,21 +67,26 @@ include_once "common/functions.php";
                         </div>
                         <div class="col-auto">
                             <input type="number" class="form-control" name="in_h_szekszam" placeholder="Székszám? (Nem kötelező)" min="1" step="1">
-                        </div>
-                        <div class="col-auto">
-                            <input type="number" class="form-control" name="in_jarat_id" placeholder="Járat? (járat id)" min="1" step="1">
-                        </div>
+                        </div>';
+                        echo '<div class="col-auto"><label for="melyikJarat" class="form-label">Járat: </label></div>';
+                        echo '<div class="col-auto"><select class="form-select" name="in_jarat_id" id="melyikJarat">';
+                        echo '<option value="">...</option>';
+                        while ($jarat_row = mysqli_fetch_assoc($routes)) {
+                            echo '<option value="' . $jarat_row['jarat_id'] .'"> ' . $jarat_row['tipus'] . ': ' . $jarat_row['szolgaltato'] . ', ' . $jarat_row['ev'] . '/' . $jarat_row['honap'] . '/' . $jarat_row['nap'] . ', ' . $jarat_row['honnan_nev'] . ' - ' . $jarat_row['hova_nev'] . ' </option>';
+                        }
+                        mysqli_free_result($routes);
+                        echo '</select> </div>';
+                        echo '
                         <div class="col-auto">
                             <input type="submit" class="btn btn-info" value="Elküldés" name="submitted" />
                         </div>
                     </form>
                 </div>
-            </div>
-            <?php
-            $tickets = get_data("jegy");
-            if ($tickets === "") {
+            </div>';
+            $tickets = list_tickets();
+            if ($tickets === false) {
                 echo '<div class="alert alert-danger text-center" role="alert">
-                        A tábla üres!
+                        Sikertelen adatbázisművelet!
                     </div>';
             } else {
                 if ($tickets === false) {
@@ -90,7 +101,7 @@ include_once "common/functions.php";
                                 <th class="col">ár</th>
                                 <th class="col">rész (ha helyjegy)</th>
                                 <th class="col">székszám (ha helyjegy)</th>
-                                <th class="col">járat, id alapján</th>
+                                <th class="col">járat</th>
                                 <th class="col">törlés</th>
                                 <th class="col">módosítás</th>
                             </tr>
@@ -103,7 +114,7 @@ include_once "common/functions.php";
                                 echo '<td>' . $row['ar'] . '</td>';
                                 echo '<td>' . ($row['h_resz'] == "" ? "nincs" : $row['h_resz']) . '</td>';
                                 echo '<td>' . (($row['h_szekszam'] == "" || $row['h_szekszam'] == 0) ? "nincs" : $row['h_szekszam']) . '</td>';
-                                echo '<td>' . $row['jarat_id'] . '</td>';
+                                echo '<td>' . $row['tipus'] . ': ' . $row['szolgaltato'] . ', ' . $row['ev'] . '/' . $row['honap'] . '/' . $row['nap'] . ', ' . $row['honnan_nev'] . ' - ' . $row['hova_nev'] . '</td>';
                                 echo '<td><form method="POST" action="deleteitem.php">
                                 <input type="hidden" name="frompage" value="tickets" />
                                 <input type="hidden" name="in_jegy_id" value=' . $row['jegy_id'] . ' />
@@ -138,11 +149,17 @@ include_once "common/functions.php";
                                                     </div>
                                                     <div class="col-auto">
                                                         <input type="number" class="form-control" name="in_h_szekszam" placeholder="Székszám? (Nem kötelező)" min="1" step="1">
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <input type="number" class="form-control" name="in_jarat_id" placeholder="Járat? (járat id)" min="1" step="1">
-                                                    </div>
-                                                    <div class="col-auto">
+                                                    </div>';
+                                                    $routes = list_routes();
+                                                    echo '<div class="col-auto"><label for="melyikJarat_m" class="form-label">Járat: </label></div>';
+                                                    echo '<div class="col-auto"><select class="form-select" name="in_jarat_id" id="melyikJarat_m">';
+                                                    echo '<option value="">...</option>';
+                                                    while ($jarat_row = mysqli_fetch_assoc($routes)) {
+                                                        echo '<option value="' . $jarat_row['jarat_id'] .'"> ' . $jarat_row['tipus'] . ': ' . $jarat_row['szolgaltato'] . ', ' . $jarat_row['ev'] . '/' . $jarat_row['honap'] . '/' . $jarat_row['nap'] . ', ' . $jarat_row['honnan_nev'] . ' - ' . $jarat_row['hova_nev'] . ' </option>';
+                                                    }
+                                                    mysqli_free_result($routes);
+                                                    echo '</select> </div>';
+                                                    echo '<div class="col-auto">
                                                         <input type="submit" class="btn btn-info" value="Elküldés" name="submitted" />
                                                     </div>
                                                 </form>

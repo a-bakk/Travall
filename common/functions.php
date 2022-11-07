@@ -82,7 +82,28 @@ function list_routes() {
     if (!$connection) return false;
     $sql = "SELECT  jarat.jarat_id, jarat.tipus, jarat.szolgaltato, jarat.ev, jarat.honap, jarat.nap,
                     honnan.varosnev AS honnan_nev, hova.varosnev AS hova_nev
-                    FROM jarat INNER JOIN varos honnan ON jarat.honnan_varos_id = honnan.varos_id
+                    FROM 
+                    jarat INNER JOIN varos honnan ON jarat.honnan_varos_id = honnan.varos_id
+                    INNER JOIN varos hova ON jarat.hova_varos_id = hova.varos_id;";
+    try {
+        $result = mysqli_query($connection, $sql);
+        mysqli_close($connection);
+        return $result;
+    } catch (Exception) {
+        mysqli_close($connection);
+        return false;
+    }
+}
+
+function list_tickets() {
+    $connection = open_connection();
+    if (!$connection) return false;
+    $sql = "SELECT  jegy.jegy_id, jegy.ar, jegy.h_resz, jegy.h_szekszam, jegy.jarat_id,
+                    jarat.jarat_id AS jarat_jarat_id, jarat.tipus, jarat.szolgaltato, jarat.ev, jarat.honap, jarat.nap,
+                    honnan.varosnev AS honnan_nev, hova.varosnev AS hova_nev
+                    FROM 
+                    jegy INNER JOIN jarat ON jegy.jarat_id = jarat.jarat_id
+                    INNER JOIN varos honnan ON jarat.honnan_varos_id = honnan.varos_id
                     INNER JOIN varos hova ON jarat.hova_varos_id = hova.varos_id;";
     try {
         $result = mysqli_query($connection, $sql);

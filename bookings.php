@@ -45,17 +45,29 @@ include_once "common/functions.php";
                 Sikeres művelet!
                 </div>';
             }
-            ?>
+            echo '
             <div class="row mb-5">
                 <div class="col-md-auto">
                     <h5>Új rekord felvitele</h5>
                 </div>
                 <div class="col-md-auto">
                     <form method="POST" action="createitem.php" class="row gy-2 gx-3 align-items-center">
-                        <div class="col-auto">
-                            <input type="hidden" name="frompage" value="bookings" />
-                            <input type="text" class="form-control" name="in_email" placeholder="Foglaló e-mail címe">
-                        </div>
+                        <input type="hidden" name="frompage" value="bookings" />';
+                        $clients = get_data("ugyfel");
+                        if ($clients === "") {
+                            echo '<div class="alert alert-danger text-center" role="alert">
+                            Sikertelen adatbázisművelet!
+                            </div>';
+                        }
+                        echo '<div class="col-auto"><label for="clientEmail" class="form-label">E-mail: </label></div>';
+                        echo '<div class="col-auto"><select class="form-select" name="in_email" id="clientEmail">';
+                        echo '<option value="">...</option>';
+                        while ($client_row = mysqli_fetch_assoc($clients)) {
+                            echo '<option value="' . $client_row['email'] .'"> ' . $client_row['email'] . ' - ' . $client_row['keresztnev'] . ' ' . $client_row['vezeteknev'] . ' </option>';
+                        }
+                        echo '</select> </div>';
+                        mysqli_free_result($clients);
+                        echo '
                         <div class="col-auto">
                             <input type="number" class="form-control" name="in_l_ev" placeholder="Év" min = "1" step = "1">
                         </div>
@@ -70,8 +82,7 @@ include_once "common/functions.php";
                         </div>
                     </form>
                 </div>
-            </div>
-            <?php
+            </div>';
             $bookings = get_data("foglalas");
             if ($bookings === "") {
                 echo '<div class="alert alert-danger text-center" role="alert">
@@ -129,11 +140,22 @@ include_once "common/functions.php";
                                             <div class="modal-body">
                                                 <form method="POST" action="modifyitem.php" class="row gy-2 gx-3 align-items-center">
                                                     <input type="hidden" name="frompage" value="bookings" />
-                                                    <input type="hidden" name="in_foglalas_id" value=' . $row['foglalas_id'] . ' />
-                                                    <div class="col-auto">
-                                                        <input type="text" class="form-control" name="in_email" placeholder="Új e-mail"/>
-                                                    </div>
-                                                    <div class="col-auto">
+                                                    <input type="hidden" name="in_foglalas_id" value=' . $row['foglalas_id'] . ' />';
+                                                    $clients = get_data("ugyfel");
+                                                    if ($clients === "") {
+                                                        echo '<div class="alert alert-danger text-center" role="alert">
+                                                        Sikertelen adatbázisművelet!
+                                                        </div>';
+                                                    }
+                                                    echo '<div class="col-auto"><label for="clientEmail" class="form-label">E-mail: </label></div>';
+                                                    echo '<div class="col-auto"><select class="form-select" name="in_email" id="clientEmail">';
+                                                    echo '<option value="">...</option>';
+                                                    while ($client_row = mysqli_fetch_assoc($clients)) {
+                                                        echo '<option value="' . $client_row['email'] .'"> ' . $client_row['email'] . ' - ' . $client_row['keresztnev'] . ' ' . $client_row['vezeteknev'] . ' </option>';
+                                                    }
+                                                    echo '</select> </div>';
+                                                    mysqli_free_result($clients);
+                                                    echo '<div class="col-auto">
                                                         <input type="number" class="form-control" name="in_l_ev" placeholder="Év" min = "1" step = "1">
                                                     </div>
                                                     <div class="col-auto">

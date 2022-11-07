@@ -82,10 +82,10 @@ if ($_POST["frompage"] === "tickets") {
     if (trim($ar) === "" || trim($jarat_id) === "") {
         header("Location: tickets.php?missingdata=true");
     } else {
-        if (empty($h_resz) || empty($h_szekszam)) {
+        if (!empty($h_resz) && !empty($h_szekszam)) {
             if (strlen($h_resz) > 1) {
-                $what = "(ar, jarat_id)";
-                $data = [$ar, $jarat_id];
+                $what = "(ar, h_resz, h_szekszam, jarat_id)";
+                $data = [$ar, $h_resz, $h_szekszam, $jarat_id];
                 if (create_data("jegy", $what, $data)) {
                     header("Location: tickets.php?success=true");
                 } else {
@@ -95,8 +95,8 @@ if ($_POST["frompage"] === "tickets") {
                 header("Location: tickets.php?invaliddata=true");
             }
         } else {
-            $what = "(ar, h_resz, h_szekszam, jarat_id)";
-            $data = [$ar, $h_resz, $h_szekszam, $jarat_id];
+            $what = "(ar, jarat_id)";
+            $data = [$ar, $jarat_id];
             if (create_data("jegy", $what, $data)) {
                 header("Location: tickets.php?success=true");
             } else {
