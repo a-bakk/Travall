@@ -206,7 +206,7 @@ INSERT INTO foglalas(email, l_ev, l_honap, l_nap) VALUES
 
 INSERT INTO tartalmaz VALUES
     (1, 1),
-    (2, 1),
+    (2, 3),
     (3, 5),
     (4, 17),
     (4, 9),

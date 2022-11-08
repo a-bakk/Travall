@@ -59,7 +59,14 @@ include_once "common/functions.php";
                     <form method="POST" action="createitem.php" class="row gy-2 gx-3 align-items-center">
                         <div class="col-auto">
                             <input type="hidden" name="frompage" value="routes" />
-                            <input type="text" class="form-control" name="in_tipus" placeholder="Új járat típusa">
+                            <div class="row">
+                            <div class="col-auto"><label for="typeCreate" class="form-label">Típus: </label></div>
+                            <div class="col-auto"><select class="form-select" name="in_tipus" id="typeCreate">
+                                <option value="">...</option>
+                                <option value="repülő">repülő</option>
+                                <option value="vonat">vonat</option>
+                                <option value="busz">busz</option>
+                            </select></div></div>
                         </div>
                         <div class="col-auto">
                             <input type="text" class="form-control" name="in_szolgaltato" placeholder="Új járat szolgáltatója">
@@ -172,7 +179,14 @@ include_once "common/functions.php";
                                                     <input type="hidden" name="frompage" value="routes" />
                                                     <input type="hidden" name="in_jarat_id" value=' . $row['jarat_id'] . ' />
                                                     <div class="col-auto">
-                                                        <input type="text" class="form-control" name="in_tipus" placeholder="Új típus"/>
+                                                        <div class="row">
+                                                        <div class="col-auto"><label for="typeModify" class="form-label">Típus: </label></div>
+                                                        <div class="col-auto"><select class="form-select" name="in_tipus" id="typeModify">
+                                                            <option value="">...</option>
+                                                            <option value="repülő">repülő</option>
+                                                            <option value="vonat">vonat</option>
+                                                            <option value="busz">busz</option>
+                                                        </select></div></div>
                                                     </div>
                                                     <div class="col-auto">
                                                         <input type="text" class="form-control" name="in_szolgaltato" placeholder="Új szolgáltató">

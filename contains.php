@@ -45,28 +45,52 @@ include_once "common/functions.php";
                 Sikeres művelet!
                 </div>';
             }
-            ?>
+            echo '
             <div class="row mb-5">
                 <div class="col-md-auto">
                     <h5>Új rekord felvitele</h5>
                 </div>
                 <div class="col-md-auto">
                     <form method="POST" action="createitem.php" class="row gy-2 gx-3 align-items-center">
-                        <div class="col-auto">
-                            <input type="hidden" name="frompage" value="contains" />
-                            <input type="number" class="form-control" name="in_foglalas_id" placeholder="Foglalás id" min = "1" step = "1">
-                        </div>
-                        <div class="col-auto">
-                            <input type="number" class="form-control" name="in_jarat_id" placeholder="Járat id" min = "1" step = "1">
-                        </div>
+                            <input type="hidden" name="frompage" value="contains" />';
+                            $bookings = get_data("foglalas");
+                            if ($bookings === "") {
+                                echo '<div class="alert alert-danger text-center" role="alert">
+                                        Sikertelen adatbázisművelet!
+                                    </div>';
+                            }
+                            echo '<div class="col-auto"><div class="row">';
+                            echo '<div class="col-auto"><label for="foglalasCreate" class="form-label">Foglalás: </label></div>';
+                            echo '<div class="col-auto"><select class="form-select" name="in_foglalas_id" id="foglalasCreate">';
+                            echo '<option value="">...</option>';
+                            while ($row = mysqli_fetch_assoc($bookings)) {
+                                echo '<option value="' . $row['foglalas_id'] .'"> ' . $row['email'] . ' - ' . $row['l_ev'] . '/' . $row['l_honap'] . '/' . $row['l_nap'] . ' </option>';
+                            }
+                            echo '</select></div></div></div>';
+                            mysqli_free_result($bookings);
+                            $routes = list_routes();
+                            if ($routes === "") {
+                                echo '<div class="alert alert-danger text-center" role="alert">
+                                        Sikertelen adatbázisművelet!
+                                    </div>';
+                            }
+                            echo '<div class="col-auto"><div class="row">';
+                            echo '<div class="col-auto"><label for="jaratCreate" class="form-label">Járat: </label></div>';
+                            echo '<div class="col-auto"><select class="form-select" name="in_jarat_id" id="jaratCreate">';
+                            echo '<option value="">...</option>';
+                            while ($row = mysqli_fetch_assoc($routes)) {
+                                echo '<option value="' . $row['jarat_id'] .'"> ' . $row['tipus'] . ': ' . $row['szolgaltato'] . ', ' . $row['ev'] . '/' . $row['honap'] . '/' . $row['nap'] . ', ' . $row['honnan_nev'] . ' - ' . $row['hova_nev'] . ' </option>';
+                            }
+                            echo '</select></div></div></div>';
+                            mysqli_free_result($routes);
+                        echo '
                         <div class="col-auto">
                             <input type="submit" class="btn btn-info" value="Elküldés" name="submitted" />
                         </div>
                     </form>
                 </div>
-            </div>
-            <?php
-            $contains = get_data("tartalmaz");
+            </div>';
+            $contains = list_contains();
             if ($contains === "") {
                 echo '<div class="alert alert-danger text-center" role="alert">
                         A tábla üres!
@@ -80,8 +104,8 @@ include_once "common/functions.php";
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="col">foglalás id</th> // kind of generált adat, viszont csak ez van ebben a táblában
-                                <th class="col">járat id</th>
+                                <th class="col">foglalás</th>
+                                <th class="col">járat</th>
                                 <th class="col">törlés</th>
                                 <th class="col">módosítás</th>
                             </tr>
@@ -91,8 +115,8 @@ include_once "common/functions.php";
                             $i = 1;
                             while ($row = mysqli_fetch_assoc($contains)) {
                                 echo '<tr>';
-                                echo '<td>' . $row['foglalas_id'] . '</td>';
-                                echo '<td>' . $row['jarat_id'] . '</td>';
+                                echo '<td>' . $row['email'] . ' - ' . $row['l_ev'] . '/' . $row['l_honap'] . '/' . $row['l_nap'] . '</td>';
+                                echo '<td>' . $row['tipus'] . ': ' . $row['szolgaltato'] . ', ' . $row['ev'] . '/' . $row['honap'] . '/' . $row['nap'] . ', ' . $row['honnan_nev'] . ' - ' . $row['hova_nev'] . '</td>';
                                 echo '<td><form method="POST" action="deleteitem.php">
                                 <input type="hidden" name="frompage" value="contains" />
                                 <input type="hidden" name="in_foglalas_id" value=' . $row['foglalas_id'] . ' />
@@ -120,14 +144,38 @@ include_once "common/functions.php";
                                                 <form method="POST" action="modifyitem.php" class="row gy-2 gx-3 align-items-center">
                                                     <input type="hidden" name="frompage" value="contains" />
                                                     <input type="hidden" name="foglalas_id" value=' . $row['foglalas_id'] . ' />
-                                                    <input type="hidden" name="jarat_id" value=' . $row['jarat_id'] . ' />
-                                                    <div class="col-auto">
-                                                        <input type="number" class="form-control" name="in_foglalas_id" placeholder="Foglalás id" min = "1" step = "1">
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <input type="number" class="form-control" name="in_jarat_id" placeholder="Járat id" min = "1" step = "1">
-                                                    </div>
-                                                    <div class="col-auto">
+                                                    <input type="hidden" name="jarat_id" value=' . $row['jarat_id'] . ' />';
+                                                    $bookings = get_data("foglalas");
+                                                    if ($bookings === "") {
+                                                        echo '<div class="alert alert-danger text-center" role="alert">
+                                                                Sikertelen adatbázisművelet!
+                                                            </div>';
+                                                    }
+                                                    echo '<div class="col-auto"><div class="row">';
+                                                    echo '<div class="col-auto"><label for="foglalasModify" class="form-label">Foglalás: </label></div>';
+                                                    echo '<div class="col-auto"><select class="form-select" name="in_foglalas_id" id="foglalasModify">';
+                                                    echo '<option value="">...</option>';
+                                                    while ($row = mysqli_fetch_assoc($bookings)) {
+                                                        echo '<option value="' . $row['foglalas_id'] .'"> ' . $row['email'] . ' - ' . $row['l_ev'] . '/' . $row['l_honap'] . '/' . $row['l_nap'] . ' </option>';
+                                                    }
+                                                    echo '</select></div></div></div>';
+                                                    mysqli_free_result($bookings);
+                                                    $routes = list_routes();
+                                                    if ($routes === "") {
+                                                        echo '<div class="alert alert-danger text-center" role="alert">
+                                                                Sikertelen adatbázisművelet!
+                                                            </div>';
+                                                    }
+                                                    echo '<div class="col-auto"><div class="row">';
+                                                    echo '<div class="col-auto"><label for="jaratModify" class="form-label">Járat: </label></div>';
+                                                    echo '<div class="col-auto"><select class="form-select" name="in_jarat_id" id="jaratModify">';
+                                                    echo '<option value="">...</option>';
+                                                    while ($row = mysqli_fetch_assoc($routes)) {
+                                                        echo '<option value="' . $row['jarat_id'] .'"> ' . $row['tipus'] . ': ' . $row['szolgaltato'] . ', ' . $row['ev'] . '/' . $row['honap'] . '/' . $row['nap'] . ', ' . $row['honnan_nev'] . ' - ' . $row['hova_nev'] . ' </option>';
+                                                    }
+                                                    echo '</select></div></div></div>';
+                                                    mysqli_free_result($routes);
+                                                    echo '<div class="col-auto">
                                                         <input type="submit" class="btn btn-info" value="Elküldés" name="submitted" />
                                                     </div>
                                                 </form>

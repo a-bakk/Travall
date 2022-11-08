@@ -115,6 +115,22 @@ function list_tickets() {
     }
 }
 
+function list_contains() {
+    $connection = open_connection();
+    if (!$connection) return false;
+    $sql = "SELECT  tartalmaz.foglalas_id, tartalmaz.jarat_id, foglalas.email, foglalas.l_ev, foglalas.l_honap, foglalas.l_nap, jarat.tipus, jarat.szolgaltato, jarat.ev, jarat.nap, jarat.honap, honnan.varosnev AS honnan_nev, hova.varosnev AS hova_nev
+            FROM    tartalmaz, foglalas, jarat, varos AS honnan, varos AS hova
+            WHERE   tartalmaz.foglalas_id = foglalas.foglalas_id AND tartalmaz.jarat_id = jarat.jarat_id AND jarat.honnan_varos_id = honnan.varos_id AND jarat.hova_varos_id = hova.varos_id";
+    try {
+        $result = mysqli_query($connection, $sql);
+        mysqli_close($connection);
+        return $result;
+    } catch (Exception) {
+        mysqli_close($connection);
+        return false;
+    }
+}
+
 function create_data($tablename, $what, $data) {
     $connection = open_connection();
     if (!$connection) return false;
