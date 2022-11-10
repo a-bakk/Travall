@@ -4,14 +4,21 @@ function navGen() {
 
     $tmp = basename($_SERVER['PHP_SELF'], ".php");
 
-    $listitem = false;
+    $table_management = false;
     switch($tmp) {
         case "cities":
         case "routes":
         case "clients":
         case "tickets":
         case "bookings":
-        case "contains": $listitem = true; break;
+        case "contains": $table_management = true; break;
+    }
+
+    $query = false;
+    switch ($tmp) {
+        case "cheap_tickets":
+        case "competition":
+        case "dec_routes": $query = true; break;
     }
 
     echo "<nav class='navbar navbar-expand-lg bg-primary fw-bold text-uppercase py-1 fixed-top'>
@@ -27,8 +34,8 @@ function navGen() {
                     <li class='nav-item'>
                         <a href='index.php' class='nav-link text-white' " . ($tmp === "index" ? "style='color: darkblue !important;'" : "") . ">Főoldal</a>
                     </li>
-                    <li class='nav-item dropdown my-auto'>
-                        <a href='#' class='text-white dropdown-toggle' role='button' data-bs-toggle='dropdown' aria-expanded='false' style='text-decoration: none; " . ($listitem ? "color: darkblue !important;" : "") . "'>Táblakezelés</a>
+                    <li class='nav-item dropdown my-auto mx-3'>
+                        <a href='#' class='text-white dropdown-toggle' role='button' data-bs-toggle='dropdown' aria-expanded='false' style='text-decoration: none; " . ($table_management ? "color: darkblue !important;" : "") . "'>Táblakezelés</a>
                         <ul class='dropdown-menu'>
                             <li><a href='cities.php' class='dropdown-item nav-link'>Városok</a></li>
                             <li><a href='routes.php' class='dropdown-item nav-link'>Járatok</a></li>
@@ -36,6 +43,14 @@ function navGen() {
                             <li><a href='tickets.php' class='dropdown-item nav-link'>Jegyek</a></li>
                             <li><a href='bookings.php' class='dropdown-item nav-link'>Foglalások</a></li>
                             <li><a href='contains.php' class='dropdown-item nav-link'>Tartalmazás</a></li>
+                        </ul>
+                    </li>
+                    <li class='nav-item dropdown my-auto'>
+                        <a href='#' class='text-white dropdown-toggle' role='button' data-bs-toggle='dropdown' aria-expanded='false' style='text-decoration: none; " . ($query ? "color: darkblue !important;" : "") . "'>Összetett lekérdezések, felhasználási példák</a>
+                        <ul class='dropdown-menu'>
+                            <li><a href='cheap_tickets.php' class='dropdown-item nav-link'>Olcsó jegyek Budapestről</a></li>
+                            <li><a href='competition.php' class='dropdown-item nav-link'>Nyereményjáték</a></li>
+                            <li><a href='dec_routes.php' class='dropdown-item nav-link'>Decemberi járatok megfelelő jegyárral</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -61,6 +76,19 @@ function get_data($tablename) {
     } catch (Exception) {
         mysqli_close($connection);
         return "";
+    }
+}
+
+function get_data_by_command($sql) {
+    $connection = open_connection();
+    if (!$connection) return false;
+    try {
+        $result = mysqli_query($connection, $sql);
+        mysqli_close($connection);
+        return $result;
+    } catch (Exception) {
+        mysqli_close($connection);
+        return false;
     }
 }
 
