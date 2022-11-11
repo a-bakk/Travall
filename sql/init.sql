@@ -14,7 +14,7 @@ CREATE TABLE foglalas (
     l_honap         DECIMAL(2)      NOT NULL,
     l_nap           DECIMAL(2)      NOT NULL,
     PRIMARY KEY (foglalas_id)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 CREATE TABLE jarat (
     jarat_id        INT             NOT NULL AUTO_INCREMENT,
@@ -26,7 +26,7 @@ CREATE TABLE jarat (
     honnan_varos_id INT             NOT NULL,
     hova_varos_id   INT             NOT NULL,
     PRIMARY KEY (jarat_id)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 CREATE TABLE jegy (
     jegy_id         INT             NOT NULL AUTO_INCREMENT,
@@ -35,13 +35,13 @@ CREATE TABLE jegy (
     h_szekszam      DECIMAL(4)      DEFAULT NULL,
     jarat_id        INT             NOT NULL,
     PRIMARY KEY (jegy_id)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 CREATE TABLE tartalmaz (
     foglalas_id     INT             NOT NULL,
     jarat_id        INT             NOT NULL,
     PRIMARY KEY (foglalas_id, jarat_id)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 CREATE TABLE ugyfel (
     email           VARCHAR(80)     NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE ugyfel (
     keresztnev      VARCHAR(50)     NOT NULL,
     telefonszam     VARCHAR(20)     NOT NULL,
     PRIMARY KEY (email)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 CREATE TABLE varos (
     varos_id        INT             NOT NULL AUTO_INCREMENT,
@@ -57,7 +57,7 @@ CREATE TABLE varos (
     iranyitoszam    VARCHAR(10)     NOT NULL,
     orszag          VARCHAR(56)     NOT NULL,
     PRIMARY KEY (varos_id)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 
 ALTER TABLE foglalas
@@ -72,7 +72,7 @@ ADD FOREIGN KEY (jarat_id) REFERENCES jarat(jarat_id) ON DELETE CASCADE ON UPDAT
 
 ALTER TABLE tartalmaz
 ADD FOREIGN KEY (foglalas_id) REFERENCES foglalas(foglalas_id) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD FOREIGN KEY (jarat_id) REFERENCES jarat(jarat_id) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD FOREIGN KEY (jarat_id) REFERENCES jarat(jarat_id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 INSERT INTO varos(varosnev, iranyitoszam, orszag) VALUES
     ('Budapest', '1007', 'Hungary'),

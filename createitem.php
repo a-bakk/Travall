@@ -34,7 +34,7 @@ if ($_POST["frompage"] === "routes") {
     $hova_varos_id = $_POST["in_hova_varos_id"];
 
     if (trim($tipus) === "" || trim($szolgaltato) === "" || trim($ev) === "" || trim($honap) === "" || trim($nap) === "" || trim($honnan_varos_id) === "" || trim($hova_varos_id) === "") {
-        header("Location: routes.php?missingdata=true"); // TODO: change above with empty()
+        header("Location: routes.php?missingdata=true");
     } else {
         if (strlen($tipus) > 6 || strlen($szolgaltato) > 50) {
             header("Location: routes.php?invaliddata=true");

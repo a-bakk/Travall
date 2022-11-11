@@ -18,6 +18,7 @@ function navGen() {
     switch ($tmp) {
         case "cheap_tickets":
         case "competition":
+        case "ticketfinder":
         case "dec_routes": $query = true; break;
     }
 
@@ -51,6 +52,7 @@ function navGen() {
                             <li><a href='cheap_tickets.php' class='dropdown-item nav-link'>Olcsó jegyek Budapestről</a></li>
                             <li><a href='competition.php' class='dropdown-item nav-link'>Nyereményjáték</a></li>
                             <li><a href='dec_routes.php' class='dropdown-item nav-link'>Decemberi járatok megfelelő jegyárral</a></li>
+                            <li><a href='ticketfinder.php' class='dropdown-item nav-link'>Jegykereső (december)</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -61,9 +63,17 @@ function navGen() {
 }
 
 function open_connection() {
-    $connection = mysqli_connect("localhost", "root", "") or die("Sikertelen adatbázis csatlakozás!");
-    if (!mysqli_select_db($connection, "JEGYFOGLALAS")) return false;
-    return $connection;
+    try {
+        $connection = mysqli_connect("localhost", "root", "");
+        if (!mysqli_select_db($connection, "JEGYFOGLALAS")) return false;
+        mysqli_query($connection, 'SET NAMES UTF8');
+        mysqli_query($connection, 'SET character_set_results=utf8');
+        mysqli_set_charset($connection, 'utf8');
+        return $connection;
+    }
+    catch (\Throwable) {
+        return false;
+    }
 }
 
 function get_data($tablename) {
@@ -73,7 +83,7 @@ function get_data($tablename) {
         $result = mysqli_query($connection, "SELECT * FROM " . $tablename);
         mysqli_close($connection);
         return $result;
-    } catch (Exception) {
+    } catch (\Throwable) {
         mysqli_close($connection);
         return "";
     }
@@ -86,7 +96,7 @@ function get_data_by_command($sql) {
         $result = mysqli_query($connection, $sql);
         mysqli_close($connection);
         return $result;
-    } catch (Exception) {
+    } catch (\Throwable) {
         mysqli_close($connection);
         return false;
     }
@@ -99,7 +109,7 @@ function get_specific_data($tablename, $what) {
         $result = mysqli_query($connection, "SELECT " . $what . " FROM " . $tablename);
         mysqli_close($connection);
         return $result;
-    } catch (Exception) {
+    } catch (\Throwable) {
         mysqli_close($connection);
         return false;
     }
@@ -117,7 +127,7 @@ function list_routes() {
         $result = mysqli_query($connection, $sql);
         mysqli_close($connection);
         return $result;
-    } catch (Exception) {
+    } catch (\Throwable) {
         mysqli_close($connection);
         return false;
     }
@@ -137,7 +147,7 @@ function list_tickets() {
         $result = mysqli_query($connection, $sql);
         mysqli_close($connection);
         return $result;
-    } catch (Exception) {
+    } catch (\Throwable) {
         mysqli_close($connection);
         return false;
     }
@@ -153,7 +163,7 @@ function list_contains() {
         $result = mysqli_query($connection, $sql);
         mysqli_close($connection);
         return $result;
-    } catch (Exception) {
+    } catch (\Throwable) {
         mysqli_close($connection);
         return false;
     }
@@ -179,7 +189,7 @@ function create_data($tablename, $what, $data) {
         mysqli_close($connection);
         return true;
     }
-    catch (Exception) {
+    catch (\Throwable) {
         mysqli_close($connection);
         return false;
     }
@@ -193,27 +203,30 @@ function delete_data($tablename, $id_attr_name, $id) {
     } else {
         $sql = "DELETE FROM " . $tablename . " WHERE " . $id_attr_name . "=" . "'" . $id . "'";
     }
-    if (mysqli_query($connection, $sql)) {
+    try {
+        mysqli_query($connection, $sql);
         mysqli_close($connection);
-        return true;
+        return true;        
     }
-    else {
+    catch (\Throwable) {
         mysqli_close($connection);
-        return false;
+        return false;        
     }
 }
 
 function delete_data_contains($foglalas_id, $jarat_id) {
     $connection = open_connection();
     if (!$connection) return false;
-    if (is_numeric($foglalas_id) && is_numeric($jarat_id)) { // is_numeric() should also work
+    if (is_numeric($foglalas_id) && is_numeric($jarat_id)) {
         $sql = "DELETE FROM tartalmaz WHERE foglalas_id=" . intval($foglalas_id) . " AND jarat_id=" . intval($jarat_id);
-        if (mysqli_query($connection, $sql)) {
+        try {
+            mysqli_query($connection, $sql);
             mysqli_close($connection);
-            return true;
-        } else {
+            return true;        
+        }
+        catch (\Throwable) {
             mysqli_close($connection);
-            return false;
+            return false;        
         }
     } else {
         return false;
@@ -238,13 +251,14 @@ function update_data($tablename, $id_attr_name, $id, $assoc_data) {
     } else {
         $sql = "UPDATE " . $tablename . " SET " . $set . " WHERE " . $id_attr_name . "=" . "'" . $id . "'";
     }
-    if (mysqli_query($connection, $sql)) {
+    try {
+        mysqli_query($connection, $sql);
         mysqli_close($connection);
-        return true;
+        return true;        
     }
-    else {
+    catch (\Throwable) {
         mysqli_close($connection);
-        return false;
+        return false;        
     }
 }
 
@@ -262,13 +276,14 @@ function update_data_contains($foglalas_id, $jarat_id, $in_foglalas_id, $in_jara
     }
     $set = rtrim($set, ", ");
     $sql = "UPDATE tartalmaz SET " . $set . " WHERE foglalas_id=" . $foglalas_id . " AND jarat_id=" . $jarat_id;
-    if (mysqli_query($connection, $sql)) {
+    try {
+        mysqli_query($connection, $sql);
         mysqli_close($connection);
-        return true;
+        return true;        
     }
-    else {
+    catch (\Throwable) {
         mysqli_close($connection);
-        return false;
+        return false;        
     }
 }
 

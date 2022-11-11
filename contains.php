@@ -187,6 +187,7 @@ include_once "common/functions.php";
                                     </div>
                                 </div>
                                 </td>';
+                                echo '</tr>';
                                 $i = $i + 1;
                             }
                             mysqli_free_result($contains);

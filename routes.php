@@ -243,6 +243,7 @@ include_once "common/functions.php";
                                     </div>
                                 </div>
                                 </td>';
+                                echo '</tr>';
                             }
                             mysqli_free_result($routes);
                             ?>

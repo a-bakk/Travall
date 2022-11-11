@@ -62,6 +62,7 @@ include_once "common/functions.php";
                                 echo '<td>' . $row['keresztnev'] . '</td>';
                                 echo '<td>' . $row['telefonszam'] . '</td>';
                                 echo '<td>' . $row['number_of_bookings'] . '</td>';
+                                echo '</tr>';
                             }
                             mysqli_free_result($winners_list);
                             ?>
