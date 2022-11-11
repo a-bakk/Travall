@@ -37,7 +37,7 @@ if ($_POST["frompage"] === "routes") {
     if (trim($tipus) === "" && trim($szolgaltato) === "" && trim($ev) === "" && trim($honap) === "" && trim($nap) === "" && trim($honnan_varos_id) === "" && trim($hova_varos_id) === "") {
         header("Location: routes.php?missingdata=true");
     } else {
-        if (strlen($tipus) > 6 || strlen($szolgaltato) > 50) {
+        if (strlen($szolgaltato) > 50) {
             header("Location: routes.php?invaliddata=true");
         } else {
             $assoc_data = ["tipus" => (trim($tipus) === "" ? "" : $tipus), "szolgaltato" => (trim($szolgaltato) === "" ? "" : $szolgaltato), "ev" => (trim($ev) === "" ? "" : $ev), "honap" => (trim($honap) === "" ? "" : $honap), "nap" => (trim($nap) === "" ? "" : $nap), "honnan_varos_id" => (trim($honnan_varos_id) === "" ? "" : $honnan_varos_id), "hova_varos_id" => (trim($hova_varos_id) === "" ? "" : $hova_varos_id),];

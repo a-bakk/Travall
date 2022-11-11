@@ -33,10 +33,10 @@ if ($_POST["frompage"] === "routes") {
     $honnan_varos_id = $_POST["in_honnan_varos_id"];
     $hova_varos_id = $_POST["in_hova_varos_id"];
 
-    if (trim($tipus) === "" || trim($szolgaltato) === "" || trim($ev) === "" || trim($honap) === "" || trim($nap) === "" || trim($honnan_varos_id) === "" || trim($hova_varos_id) === "") {
+    if (trim($tipus) === "" || trim($szolgaltato) === "" || empty($ev) === "" || empty($honap) === "" || empty($nap) === "" || empty($honnan_varos_id) === "" || empty($hova_varos_id) === "") {
         header("Location: routes.php?missingdata=true");
     } else {
-        if (strlen($tipus) > 6 || strlen($szolgaltato) > 50) {
+        if (strlen($szolgaltato) > 50) {
             header("Location: routes.php?invaliddata=true");
         } else {
             $what = "(tipus, szolgaltato, ev, honap, nap, honnan_varos_id, hova_varos_id)";

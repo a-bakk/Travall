@@ -42,7 +42,7 @@ include_once "common/functions.php";
                 </form>
             </div>
             <?php
-            if (!isset($_POST['submitted'])) {
+            if (!isset($_POST['submitted']) || empty($_POST['restrictive_value'])) {
                 $_POST['restrictive_value'] = 100.00;
             }
             $providers = get_data_by_command("
